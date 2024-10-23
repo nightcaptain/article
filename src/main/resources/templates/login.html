@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>登录</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ 
+    <link href="/css3/styles.css" rel="stylesheet" type="text/css" />
+    <link href="/css3/demo.css" rel="stylesheet" type="text/css" />
+ 
+</head>
+<body>
+    <div class='login'>
+        <img src="/image/logo2.png" style="width: 50px;height:50px;border-radius:50px;" /> 让程序不再单调
+        <div class='login_fields'>
+            <div class='login_fields__user'>
+                <div class='icon'>
+                    <img alt="" src='/image/user_icon_copy.png'>
+                </div>
+                <input name="username" placeholder='用户名' maxlength="16" type='text' autocomplete="off" value="" />
+                <div class='validation'>
+                    <img alt="" src='/image/tick.png'>
+                </div>
+            </div>
+            <div class='login_fields__password'>
+                <div class='icon'>
+                    <img alt="" src='/image/lock_icon_copy.png'>
+                </div>
+                <input name="pwd" placeholder='密码' maxlength="16" type='password' autocomplete="off">
+                <div class='validation'>
+                    <img alt="" src='/image/tick.png'>
+                </div>
+            </div>
+            <div class='login_fields__submit'>
+                <input type='button' value='登录' class="sign"><input type='button' value='注册' class="register">
+            </div>
+        </div>
+        <div class='success'>
+        </div>
+    </div>
+    <div class='authent'>
+        <div class="loader" style="height: 44px;width: 44px;margin-left: 28px;">
+            <div class="loader-inner ball-clip-rotate-multiple">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <p>认证中...</p>
+    </div>
+    <div class="OverWindows"></div>
+</body>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.register').click(function () {
+            location.href = '/register'
+        })
+        $('.sign').click(function () {
+            var username = $('[name="username"]').val()
+            var pwd = $('[name="pwd"]').val()
+            if(username==''){
+                alert('请输入用户名')
+                return
+            }
+            if(pwd==''){
+                alert('请输入密码')
+                return
+            }
+            $.ajax({
+                url: '/loginUser',
+                method: "post",
+                dataType: "json",
+                data:{
+                    'username':username,
+                    'password':pwd
+                },
+                success: function (data) {
+                    if(data.code==0){
+                        alert('登录成功')
+                        location.href = '/'
+                    }else if(data.code==1){
+                        alert('用户名或密码错误！')
+                    }
+                }
+            })
+        })
+    })
+</script>
+</html>

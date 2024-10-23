@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文献知识搜索</title>
+    <link rel="stylesheet" href="/css/mdui.min1.css">
+    <script src="/js/mdui.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.cookie.min1.js"></script>
+    <link rel="stylesheet" href="/css/common2.css">
+    <script src="/js/common2.js"></script>
+
+</head>
+<body class="mdui-theme-primary-light-green mdui-theme-accent-indigo">
+
+    <div class="mdui-container-fluid mdui-typo">
+        <div class="mdui-row">
+              <div class="mdui-col-xs-12 mdui-shadow-2" style="height: 30px; ">
+
+                  <div class="mdui-container mdui-typo mdui-valign" style="margin-top: 3px;">
+
+                      <div class="mdui-row mdui-valign" style="width: 100%;">
+
+                          <div class="mdui-col-xs-6">
+                             <span><a href="/" class="mdui-text-color-black-secondary"> 文献知识搜索 </a></span>
+                          </div>
+
+                          <div class="mdui-col-xs-6">
+                              <span class="mdui-float-right"><a href="/advance_search" class="mdui-text-color-black-secondary">&nbsp; 高级检索</a></span>
+                              <a href="/login" class="mdui-text-color-black-secondary" th:if="${session.user==null}"> 登录 </a>
+                              <a href="#" class="mdui-text-color-black-secondary" th:if="${session.user!=null}" th:text="${session.user.username}"></a>
+                              <a href="/logout" class="mdui-text-color-black-secondary" th:if="${session.user!=null}"> 注销 </a>
+                          </div>
+
+                      </div>
+
+                  </div>
+
+              </div>
+        </div>
+    </div>
+
+    <div class="mdui-container mdui-typo mdui-m-t-2">
+
+        <div class="mdui-row mdui-valign">
+              <div class="mdui-col-md-2 mdui-col-xs-3 mdui-valign">
+
+                  <a href="/">
+                    <img src="/picture/idata_logo.png" width="175px" height="50px">
+                  </a>
+
+              </div>
+
+            <div class="mdui-col-md-9 mdui-col-xs-9">
+                
+                    <div class="mdui-col-xs-7">
+                        <span class="mdui-m-l-1"><a id="db2" href="javascript:changeDb('db2');">期刊</a></span>
+                        <span class="mdui-m-l-1"><a id="db3" href="javascript:changeDb('db3');">博硕</a></span>
+                        <span class="mdui-m-l-1"><a id="db4" href="javascript:changeDb('db4');">会议</a></span>
+                    </div>
+                
+
+                <div class="mdui-col-md-9 mdui-col-xs-12">
+
+                    <form id="searchForm" action="search" method="get" db="db1">
+                        <div class="mdui-col-xs-10 mdui-textfield">
+                          <input id="keyword" name="keyword" class="mdui-textfield-input" type="text" th:value="${keyword}" placeholder="请输入关键词" value="化疗中医操作">
+
+                        </div>
+
+                        <input hidden="" id="searchDb" name="db" value="CFLS">
+                        <div class="mdui-col-xs-2 mdui-m-t-2">
+                            <button class="mdui-btn mdui-btn-dense mdui-btn-raised mdui-color-theme-accent" type="submit">检索</button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+            <div class="mdui-row mdui-typo" th:each="item:${list}">
+              <div class="mdui-col-xs-12 mdui-col-md-9 mdui-typo">
+
+                  <h3 class="mdui-m-t-0 mdui-m-l-1"><a th:href="@{/articleDetail/{aid}(aid=${item.id})}" th:text="${item.TI}"></a></h3>
+                  <div class="mdui-col-xs-12">
+                      <span class="mdui-text-color-green-700"  th:text="${item.AU}"></span>
+                      <span class="mdui-m-l-1 mdui-text-color-green-700" th:text="${item.LY}"></span>
+                      <span class="mdui-m-l-1 mdui-text-color-green-700" th:text="${item.date}">2016-03-04 09:34</span>
+                      <span class="mdui-m-l-1 mdui-text-color-green-700" th:text="${item.paperType}"></span>
+                  </div>
+                  <div class="mdui-col-xs-12 mdui-typo">
+                      <p style="text-align: justify;letter-spacing: 0.07em;" th:text="${item.AB}">
+
+                      </p>
+                  </div>
+
+                  <div class="mdui-col-xs-12">
+                      <a th:href="@{/articleDetail/{aid}(aid=${item.id})}" class="mdui-btn mdui-btn-dense mdui-color-theme-accent mdui-ripple">
+                          我要评分
+                      </a>
+                      <a th:href="${item.link}" class="mdui-btn mdui-btn-dense mdui-color-green-700 mdui-ripple" target="_blank">
+                          去知网查看
+                      </a>
+                  </div>
+                  <div class="mdui-col-xs-12">
+                        <hr>
+                  </div>
+              </div>
+            </div>
+        
+
+        <div class="mdui-row mdui-m-t-2" th:if="${#lists.isEmpty(list)}">
+              <div class="mdui-col-xs-9 mdui-valign">
+                  <span class=" mdui-p-t-0 mdui-col-xs-12 "><strong>无相关搜索</strong></span>
+              </div>
+        </div>
+
+        <div id="related" class="mdui-row-xs-4 mdui-col-xs-9">
+        </div>
+
+        <div class="mdui-row">
+
+            <div class='mdui-col-xs-9 TitleLeftCell mdui-valign'>
+                <div class="pagerTitleCell"><span class="pagerTitle" id="lbPagerTitle" name="lbPagerTitle"></span>&nbsp; &nbsp;</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="mdui-row mdui-m-t-1">
+    <div id="ftCon">
+
+      <div class="ftCon-Wrapper">
+        <div id="ftConw">
+          <p id="cp">
+            ©2022&nbsp;文献&nbsp;
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        // getRelated('化疗中医操作');
+    </script>
+</body>
+</html>

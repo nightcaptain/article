@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjdf.article.dao.ArticleDao">
+    <!--配置查询所有-->
+    <select id="getArticlesByInfo" resultType="com.sjdf.article.entity.Article">
+        select * from article
+        <where>
+            <if test="param.keywords!=null and param.keywords!=''">
+                ${param.keywords}
+            </if>
+            <choose>
+                <when test="param.types==2">
+                    and paper_type = '期刊'
+                </when>
+                <when test="param.types==3">
+                    and (paper_type = '硕士论文' or paper_type = '博士论文')
+                </when>
+                <when test="param.types==4">
+                    and paper_type = '会议'
+                </when>
+                <when test="param.types==5">
+                    and paper_type = '报纸'
+                </when>
+            </choose>
+            <if test="param.startYear!=null">
+                    and date &gt;= #{param.startYear}
+            </if>
+            <if test="param.endYear!=null">
+                    and date &lt;= #{param.endYear}
+            </if>
+        </where>
+        limit #{param.page},5
+    </select>
+
+    <!--配置查询所有-->
+    <select id="getArticlesByKeyword" resultType="com.sjdf.article.entity.Article">
+        select * from article
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                TI like concat('%',#{keyword},'%')
+            </if>
+            <choose>
+                <when test="type==2">
+                    and paper_type = '期刊'
+                </when>
+                <when test="type==3">
+                    and (paper_type = '硕士论文' or paper_type = '博士论文')
+                </when>
+                <when test="type==4">
+                    and paper_type = '会议'
+                </when>
+            </choose>
+        </where>
+    </select>
+    
+    <select id="getRandIds" resultType="java.lang.Integer">
+        SELECT
+            id
+        FROM
+            article
+        WHERE
+             id NOT IN (
+                        SELECT
+                            book_id
+                        FROM
+                            record
+                        WHERE
+                            user_id IN (
+                                SELECT
+                                    user_id
+                                FROM
+                                    scoreresult
+                                WHERE
+                                    round_id = ( SELECT max( id ) FROM round WHERE end_time IS NOT NULL )
+                                AND group_id = (
+                                        SELECT
+                                                group_id
+                                        FROM
+                                                scoreresult
+                                        WHERE
+                                                round_id = ( SELECT max( id ) FROM round WHERE end_time IS NOT NULL )
+                                        AND user_id = #{uid}
+                                )
+                            )
+                    GROUP BY
+                        book_id
+                    ORDER BY
+                        avg( score ) DESC,
+                        count( book_id ) DESC,
+                        operdate DESC
+        )  ORDER BY RAND() LIMIT ${limit}
+    </select>
+
+    <select id="getRandomsArt" resultType="com.sjdf.article.entity.Article">
+        SELECT * FROM article ORDER BY RAND() LIMIT 20
+    </select>
+</mapper>

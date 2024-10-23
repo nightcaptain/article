@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文献智能推荐检索平台</title>
+    <meta name="keywords" content="文献智能推荐检索平台">
+    <meta name="description" content="文献智能推荐检索平台">
+
+    <link rel="stylesheet" href="/css/common2.css">
+    <link rel="stylesheet" href="/css/mdui.min.css">
+    <script src="/js/mdui.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.cookie.min.js"></script>
+    <script src="/js/common2.js"></script>
+</head>
+<body class="mdui-theme-primary-light-green mdui-theme-accent-indigo" style="min-height: 750px;">
+
+    <div class="mdui-container-fluid mdui-typo">
+        <div class="mdui-row mdui-shadow-2">
+              <div class="mdui-col-xs-12" style="height: 30px; ">
+
+                  <div class="mdui-container mdui-typo mdui-valign" style="margin-top: 3px;">
+
+                      <div class="mdui-row mdui-valign" style="width: 100%;">
+
+                          <div class="mdui-col-xs-6">
+                             <span><a href="" class="mdui-text-color-black-secondary"> 欢迎使用文献智能推荐检索平台 </a></span>
+                          </div>
+
+                          <div class="mdui-col-xs-6">
+
+                             <span class="mdui-float-right">
+                                 <a href="/login" class="mdui-text-color-black-secondary" th:if="${session.user==null}"> 登录 </a>
+                                 <a href="#" class="mdui-text-color-black-secondary" th:if="${session.user!=null}" th:text="${session.user.username}"></a>
+                                 <a href="/logout" class="mdui-text-color-black-secondary" th:if="${session.user!=null}"> 注销 </a>
+                                 <a href="/daping" class="mdui-text-color-black-secondary" th:if="${session.user!=null}"> 查看大屏 </a>
+                             </span>
+                          </div>
+
+                      </div>
+
+                  </div>
+
+              </div>
+        </div>
+    </div>
+
+    <div class="mdui-container">
+
+
+        <div class="mdui-row mdui-valign" style="margin-top: 100px;">
+
+            <div class="mdui-col-xs-12" style="text-align: center;">
+                <img src="/picture/idata_logo.png" width="180px" height="50px">
+            </div>
+
+        </div>
+
+        <div class="mdui-row mdui-valign mdui-m-t-3">
+
+            <div class="mdui-col-xs-12">
+                <div class="search mdui-center">
+                    <div class="mdui-row">
+                        <ul class="nav" style="display: block;">
+                            <li id="db2" class="item cur" onclick="changeIndexDb('db2')"><a>期刊</a></li>
+                            <li id="db3" class="item" onclick="changeIndexDb('db3')"><a>博硕士</a></li>
+                            <li id="db4" class="item" onclick="changeIndexDb('db4')"><a>会议</a></li>
+                        </ul>
+                    </div>
+                    <div class="mdui-row">
+                        <form id="searchForm" action="search" method="get">
+                            <input name="keyword" type="text" class="text" id="txt_SearchText" maxlength="100">
+                            <input type="submit" class="mainbtn" value="检索">
+                            <input type="hidden" id="searchDb" name="type" value="1">
+                        </form>
+                    </div>
+
+                    <div class="c">
+                        <div id="advance_link" class="extend mdui-center">
+                            <a href="/advance_search">高级检索</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="mdui-row mdui-m-t-4 mdui-row-gapless">
+              <div class="mdui-col-xs-12">
+                  <div class="latest mdui-center">
+                    <span class="mdui-m-l-0 mdui-col-xs-12 mdui-text-color-black-secondary"><strong>推荐检索</strong></span>
+
+                    <div id="related" class="mdui-row-xs-4 mdui-col-xs-12 mdui-m-t-2">
+                        <div class="mdui-col mdui-m-t-1 mdui-text-truncate" th:each="item:${top20}"><a th:href="@{/articleDetail/{aid}(aid=${item.id})}" class="mdui-text-color-black-secondary
+                        
+                        " th:text="${item.TI}"></a></div>
+                    </div>
+                  </div>
+              </div>
+        </div>
+    </div>
+
+    <div id="ftCon" style="position: absolute; top: 750px;">
+
+      <div class="ftCon-Wrapper">
+        <div id="ftConw">
+          <p id="cp">
+            ©2022&nbsp;iData&nbsp;
+          </p>
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>

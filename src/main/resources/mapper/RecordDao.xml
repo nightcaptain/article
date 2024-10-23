@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjdf.article.dao.RecordDao">
+    <!--配置查询所有-->
+    <select id="getArticleId" resultType="java.lang.Integer">
+        SELECT
+			book_id
+		FROM
+			record
+		WHERE
+			user_id IN (
+		SELECT
+			user_id
+		FROM
+			scoreresult
+		WHERE
+			round_id = ( SELECT max( id ) FROM round WHERE end_time IS NOT NULL )
+			AND group_id = (
+				SELECT
+					group_id
+				FROM
+					scoreresult
+				WHERE
+					round_id = ( SELECT max( id ) FROM Round WHERE end_time IS NOT NULL )
+					AND user_id = #{uid}
+			)
+		)
+		GROUP BY
+			book_id
+		ORDER BY
+			avg( score ) DESC,
+			count( book_id ) DESC,
+			operdate DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>注册</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link href="/css3/styles.css" rel="stylesheet" type="text/css" />
+    <link href="/css3/demo.css" rel="stylesheet" type="text/css" />
+
+
+</head>
+<body>
+    <div class='login'>
+        <img src="/image/logo2.png" style="width: 50px;height:50px;border-radius:50px;" /> 让程序不再单调
+        <div class='login_fields'>
+            <div class='login_fields__user'>
+                <div class='icon'>
+                    <img alt="" src='/image/user_icon_copy.png'>
+                </div>
+                <input name="username" placeholder='用户名' maxlength="16" type='text' autocomplete="off" value="" />
+                <div class='validation'>
+                    <img alt="" src='/image/tick.png'>
+                </div>
+            </div>
+            <div class='login_fields__password'>
+                <div class='icon'>
+                    <img alt="" src='/image/lock_icon_copy.png'>
+                </div>
+                <input name="pwd" placeholder='密码' maxlength="16" type='password' autocomplete="off">
+                <div class='validation'>
+                    <img alt="" src='/image/tick.png'>
+                </div>
+            </div>
+            <div class='login_fields__password'>
+                <div class='icon'>
+                    <img alt="" src='/image/lock_icon_copy.png'>
+                </div>
+                <input name="re_pwd" placeholder='确认密码' maxlength="16" type='password' autocomplete="off">
+                <div class='validation'>
+                    <img alt="" src='/image/tick.png'>
+                </div>
+            </div>
+            <div class='login_fields__user'>
+                <div class='icon'>
+                    <img alt="" src='/image/user_icon_copy.png'>
+                </div>
+                <input name="hobby" placeholder='爱好' maxlength="16" type='text' autocomplete="off" value=""/>
+                <div class='validation'>
+                    <img alt="" src='/image/tick.png'>
+                </div>
+            </div>
+            <div class='login_fields__user'>
+                <div class='icon'>
+                    <img alt="" src='/image/user_icon_copy.png'>
+                </div>
+                <input name="major" placeholder='专业/职业' maxlength="16" type='text' autocomplete="off" value=""/>
+                <div class='validation'>
+                    <img alt="" src='/image/tick.png'>
+                </div>
+            </div>
+            <div class='login_fields__user'>
+                <div class='icon'>
+                    <img alt="" src='/image/user_icon_copy.png'>
+                </div>
+                <input name="age" placeholder='年龄' maxlength="16" type='text' autocomplete="off" value=""/>
+                <div class='validation'>
+                    <img alt="" src='/image/tick.png'>
+                </div>
+            </div>
+            <div class='login_fields__submit'>
+                <input type='button' value='提交' class="sign" id="submit"><input type='button' value='重置' id="reset">
+            </div>
+        </div>
+        <div class='success'>
+        </div>
+    </div>
+    <div class='authent'>
+        <div class="loader" style="height: 44px;width: 44px;margin-left: 28px;">
+            <div class="loader-inner ball-clip-rotate-multiple">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <p>认证中...</p>
+    </div>
+    <div class="OverWindows"></div>
+</body>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var username = $('[name="username"]')
+        var pwd = $('[name="pwd"]')
+        var re_pwd = $('[name="re_pwd"]')
+        var hobby = $('[name="hobby"]')
+        var major = $('[name="major"]')
+        var age = $('[name="age"]')
+        $('#submit').click(function () {
+            if(username.val()==''){
+                alert('请输入用户名')
+                return
+            }else if(pwd.val()==''){
+                alert('请输入密码')
+                return
+            }else if(re_pwd.val()==''){
+                alert('请确认密码')
+                return
+            }else if(hobby.val()==''){
+                alert('请输入爱好')
+                return
+            }else if (pwd.val() != re_pwd.val()){
+                alert('请比较两次输入的密码')
+                return
+            }else if (major.val()=='') {
+                alert('请输入专业或职业')
+                return
+            }else if (age.val()==''){
+                alert('请输入年龄')
+                return
+            }
+
+            $.ajax({
+                url: '/registerUser',
+                method: "post",
+                dataType: "json",
+                data:{
+                    'username':username.val(),
+                    'password':pwd.val(),
+                    'major': major.val(),
+                    'age': age.val(),
+                    'hobby':hobby.val()
+                },
+                success: function (data) {
+                    if(data.code==0){
+                        alert('注册成功')
+                        location.href = '/'
+                    }else if(data.code==1){
+                        alert('用户名已存在！')
+                    }
+                }
+            })
+        })
+
+        $('#reset').click(function () {
+            username.val('')
+            pwd.val('')
+            re_pwd.val('')
+            hobby.val('')
+            major.val('')
+            age.val('')
+        })
+    })
+</script>
+</html>

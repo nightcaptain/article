@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文献知识详情</title>
+    <link rel="stylesheet" href="/css/mdui.min1.css">
+    <script src="/js/mdui.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.cookie.min1.js"></script>
+    <link rel="stylesheet" href="/css/common2.css">
+    <script src="/js/common2.js"></script>
+
+</head>
+<body class="mdui-theme-primary-light-green mdui-theme-accent-indigo">
+
+    <div class="mdui-container-fluid mdui-typo">
+        <div class="mdui-row">
+              <div class="mdui-col-xs-12 mdui-shadow-2" style="height: 30px; ">
+
+                  <div class="mdui-container mdui-typo mdui-valign" style="margin-top: 3px;">
+
+                      <div class="mdui-row mdui-valign" style="width: 100%;">
+
+                          <div class="mdui-col-xs-6">
+                             <span><a href="/" class="mdui-text-color-black-secondary"> 文献知识详情 </a></span>
+                          </div>
+
+                          <div class="mdui-col-xs-6">
+                              <span class="mdui-float-right"><a href="/advance_search" class="mdui-text-color-black-secondary">&nbsp; 高级检索</a></span>
+                              <a href="/login" class="mdui-text-color-black-secondary" th:if="${session.user==null}"> 登录 </a>
+                              <a href="#" class="mdui-text-color-black-secondary" th:if="${session.user!=null}" th:text="${session.user.username}"></a>
+                              <a href="/logout" class="mdui-text-color-black-secondary" th:if="${session.user!=null}"> 注销 </a>
+                          </div>
+
+                      </div>
+
+                  </div>
+
+              </div>
+        </div>
+    </div>
+
+    <div class="mdui-container mdui-typo mdui-m-t-2">
+        <div class="mdui-row mdui-valign">
+              <div class="mdui-col-md-2 mdui-col-xs-3 mdui-valign">
+
+                  <a href="/">
+                    <img src="/picture/idata_logo.png" width="175px" height="50px">
+                  </a>
+              </div>
+        </div>
+
+            <div class="mdui-row mdui-typo">
+              <div class="mdui-col-xs-12 mdui-col-md-9 mdui-typo">
+
+                  <h3 class="mdui-m-t-0 mdui-m-l-1"><a th:href="${article.link}" target="_blank" th:text="${article.TI}"></a></h3>
+                  <div class="mdui-col-xs-12">
+                      <span class="mdui-text-color-green-700"  th:text="${article.AU}"></span>
+                      <span class="mdui-m-l-1 mdui-text-color-green-700" th:text="${article.LY}"></span>
+                      <span class="mdui-m-l-1 mdui-text-color-green-700" th:text="${article.date}"></span>
+                      <span class="mdui-m-l-1 mdui-text-color-green-700" th:text="${article.paperType}"></span>
+                      <span class="mdui-m-l-1 mdui-text-color-red-700" th:text="'下载 ('+${article.downloadTimes}+')'"></span>
+                      <span class="mdui-m-l-1 mdui-text-color-red-700" th:text="'引用 ('+${article.referTimes}+')'"></span>
+                      <span class="mdui-m-l-1 mdui-text-color-red-700" th:text="'本站查看 ('+${article.view}+')'"></span>
+                  </div>
+                  <div class="mdui-col-xs-12 mdui-typo">
+                      <p style="text-align: justify;letter-spacing: 0.07em;" th:text="${article.AB}">
+
+                      </p>
+                  </div>
+
+                  <div class="mdui-col-xs-12">
+                      评分:&nbsp;&nbsp;&nbsp;<select id="select-condition" class="mdui-select" mdui-select="">
+                          <option value="1" selected>1分</option>
+                          <option value="2">2分</option>
+                          <option value="3">3分</option>
+                          <option value="4">4分</option>
+                          <option value="5">5分</option>
+                      </select><br>
+                      评价:&nbsp;&nbsp;&nbsp;<textarea rows="10" cols="130" id="content" placeholder="请填写评论"></textarea>
+                      <a onclick="submitContent()" style="position: absolute;right: 0" class="mdui-btn mdui-btn-dense mdui-color-green-700 mdui-ripple" target="_blank">
+                          提交
+                      </a>
+                  </div>
+              </div>
+            </div>
+
+        <div id="related" class="mdui-row-xs-4 mdui-col-xs-9">
+        </div>
+
+        <div class="mdui-row">
+
+            <div class='mdui-col-xs-9 TitleLeftCell mdui-valign'>
+                <div class="pagerTitleCell"><span class="pagerTitle" id="lbPagerTitle" name="lbPagerTitle"></span>&nbsp; &nbsp;</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="mdui-row mdui-m-t-1">
+    <div id="ftCon">
+
+      <div class="ftCon-Wrapper">
+        <div id="ftConw">
+          <p id="cp">
+            ©2022&nbsp;文献&nbsp;
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+        function submitContent() {
+            var score = $("#select-condition option:selected").val()
+            var content =  $("#content").val()
+            var id = [[${article.id}]]
+            if(!score){
+                alert("请选择评分！")
+                return;
+            }
+            if(content==''){
+                alert("请填写评论！")
+                return;
+            }
+            $.ajax({
+                url: '/postContent',
+                method: "post",
+                dataType: "json",
+                data:{
+                    'score':score,
+                    'content':content,
+                    'id':id
+                },
+                success: function (data) {
+                    if(data.code==0){
+                        alert('评论成功！')
+                        history.back()
+                    }else if(data.code==1){
+                        alert('评论失败！请检查是否登录')
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+</html>

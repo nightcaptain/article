@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/daping/css/index.css">
+    <title>文献数据</title>
+    <script src="/daping/js/jquery-2.2.1.min.js"></script>
+    <script src="/daping/js/rem.js"></script>
+    <script src="/daping/js/echarts.min.js"></script>
+    <script src="/daping/js/index.js"></script>
+</head>
+<body>
+    <div class="t_container">
+        <header class="t_h_bg">
+            <span>文献大数据</span>
+        </header>
+        <main class="t_main">
+            <div class="t_box">
+                <header class="t_title">
+                    <span>文献类型数量统计</span>
+                </header>
+                <div id="chart_1" class="echart" style="width: 100%; height: 3rem;"></div>
+            </div>
+            <div class="t_box">
+                <header class="t_title">
+                    <span>关键字数量统计</span>
+                </header>
+                <div id="chart_2" class="echart" style="width: 100%; height: 3rem;"></div>
+            </div>
+            <div class="t_box">
+                <header class="t_title">
+                    <span>年度文献走势图</span>
+                </header>
+                <div id="chart_3" class="echart" style="width: 100%; height: 3rem;"></div>
+            </div>
+            <div class="t_box">
+                <div class="main_table t_btn8">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>题目</th>
+                                <th>来源</th>
+                                <th>关键词</th>
+                                <th>下载量</th>
+                                <th>引用量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item:${top7}">
+                                <td><a style="color: red" th:href="@{/articleDetail/{aid}(aid=${item.id})}" th:text="${item.TI}" target="_blank"></a></td>
+                                <td th:text="${item.LY}"></td>
+                                <td th:text="${item.KY}"></td>
+                                <td th:text="${item.downloadTimes}"></td>
+                                <td th:text="${item.referTimes}"></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
